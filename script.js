@@ -233,7 +233,7 @@ function initParticles() {
 
   pScene  = new THREE.Scene();
   pCamera = new THREE.PerspectiveCamera(60,W/H,.1,100);
-  pCamera.position.z = 7;
+  pCamera.position.z = W < 768 ? 13 : 7;
 
   /* Stars */
   const sg = new THREE.BufferGeometry();
@@ -298,51 +298,38 @@ function destroyParticles() {
 }
 
 /* ════════════════════════════════════════════════════════════════
-   3 — 3D PHOTO HEART  (true parametric surface)
-   Equations:
-     x = 16·sin³(u)·cos(v)
-     y = 13·cos(u) − 5·cos(2u) − 2·cos(3u) − cos(4u)
-     z = 16·sin³(u)·sin(v)
-   u ∈ (0, π)   v ∈ [0, 2π)
+   3 — 3D PHOTO SPHERE (Hình cầu tròn đều)
 ════════════════════════════════════════════════════════════════ */
 let hRenderer, hScene, hCamera, hGroup, hFrame;
 let hMeshes=[], hDrag=false, hPX=0, hPY=0, hRX=0, hRY=0;
 let hDownX=0, hDownY=0;
 
-/* Evaluate the heart surface at (u, v), return THREE.Vector3 */
-function heartPoint(u, v, sc) {
-  const s  = Math.sin(u), c  = Math.cos(u);
-  const s3 = s * s * s;
+/* Công thức toán học cho hình cầu */
+function spherePoint(u, v, sc) {
+  const r = 16 * sc;
   return new THREE.Vector3(
-    16 * s3 * Math.cos(v) * sc,
-    (13*c - 5*Math.cos(2*u) - 2*Math.cos(3*u) - Math.cos(4*u)) * sc,
-    16 * s3 * Math.sin(v) * sc
+    r * Math.sin(u) * Math.cos(v),
+    r * Math.cos(u),
+    r * Math.sin(u) * Math.sin(v)
   );
 }
 
-/* Outward unit normal via finite-difference cross product */
-function heartNormal(u, v, sc) {
-  const eps = 0.0001;
-  const p   = heartPoint(u, v, sc);
-  const pu  = heartPoint(u + eps, v,     sc).sub(p);
-  const pv  = heartPoint(u,     v + eps, sc).sub(p);
-  /* NOTE: cross(pu, pv) points inward for this surface, so negate */
-  return pu.cross(pv).negate().normalize();
+/* Vector pháp tuyến (để ảnh hướng ra ngoài) */
+function sphereNormal(u, v, sc) {
+  return spherePoint(u, v, sc).normalize();
 }
 
-/* Sample the surface with ~uniform tile spacing */
-function buildHeart3D(sc, tileSize) {
-  const pts    = [];
-  const uSteps = 16;                     /* latitude bands          */
+/* Tính toán lưới tọa độ dán ảnh */
+function buildSphere3D(sc, tileSize) {
+  const pts = [];
+  const uSteps = 16; 
   for (let ui = 1; ui < uSteps; ui++) {
-    const u   = (ui / uSteps) * Math.PI;
-    const s3  = Math.pow(Math.sin(u), 3);
-    const ringR = 16 * s3 * sc;          /* radius of this latitude */
-    /* tiles per ring = circumference / tileSize, min 1 */
+    const u = (ui / uSteps) * Math.PI;
+    const ringR = 16 * sc * Math.sin(u); 
     const vN = Math.max(1, Math.round(2 * Math.PI * ringR / tileSize));
     for (let vi = 0; vi < vN; vi++) {
       const v = (vi / vN) * 2 * Math.PI;
-      pts.push({ pos: heartPoint(u, v, sc), nrm: heartNormal(u, v, sc) });
+      pts.push({ pos: spherePoint(u, v, sc), nrm: sphereNormal(u, v, sc) });
     }
   }
   return pts;
@@ -379,7 +366,9 @@ async function initHeart() {
 
   hScene  = new THREE.Scene();
   hCamera = new THREE.PerspectiveCamera(46, W/H, 0.1, 100);
-  hCamera.position.z = 14;
+  
+  // FIX CHO IPHONE: Đẩy camera ra xa 22 đơn vị nếu là điện thoại để không bị cắt viền
+  hCamera.position.z = W < 768 ? 22 : 14;
 
   /* Background stars */
   const sg = new THREE.BufferGeometry();
@@ -390,7 +379,7 @@ async function initHeart() {
     color: 0xffffff, size: 0.07, transparent: true, opacity: 0.38
   })));
 
-  /* Soft pink sparkles near heart */
+  /* Soft pink sparkles near sphere */
   const spGeo = new THREE.BufferGeometry();
   const spArr = new Float32Array(400 * 3);
   for (let i = 0; i < spArr.length; i++) spArr[i] = rand(-9, 9);
@@ -399,7 +388,7 @@ async function initHeart() {
     color: 0xffb0d0, size: 0.055, transparent: true, opacity: 0.5
   })));
 
-  /* Lights — key / fill / rim for photo depth */
+  /* Lights */
   hScene.add(new THREE.AmbientLight(0xffffff, 0.55));
   const kl = new THREE.DirectionalLight(0xffe0f0, 1.4);
   kl.position.set(6, 8, 10); hScene.add(kl);
@@ -415,15 +404,10 @@ async function initHeart() {
   const textures = await Promise.all(CONFIG.images.map(loadTex));
   $('sphere-loading').classList.add('hidden');
 
-  /* ── Place photo tiles on the parametric heart surface ── */
-  const sc      = 0.30;   /* world-space scale of the heart */
-  const tileSize = 0.88;  /* target tile size in world units */
-  const pts      = buildHeart3D(sc, tileSize);
-
-  /* Heart y-range: top ≈ 5·sc, bottom ≈ -21·sc → centre = -8·sc */
-  const yCentre = (5 - 21) * 0.5 * sc;   /* ≈ -2.4 */
-
-  const up = new THREE.Vector3(0, 1, 0);
+  /* ── Xây dựng hình cầu ── */
+  const sc       = 0.35;  /* Kích thước quả cầu */
+  const tileSize = 0.95;  /* Kích thước ảnh */
+  const pts      = buildSphere3D(sc, tileSize);
 
   hMeshes = [];
   pts.forEach((pt, i) => {
@@ -439,12 +423,11 @@ async function initHeart() {
     });
     const mesh = new THREE.Mesh(geo, mat);
 
-    /* Position */
+    /* Căn tọa độ (Hình cầu đã tự căn giữa, không cần trừ yCentre nữa) */
     mesh.position.copy(pt.pos);
-    mesh.position.y -= yCentre;   /* shift so heart is centred at origin */
 
-    /* Orient tile to face outward along surface normal */
-    const fwd = new THREE.Vector3(0, 0, 1); /* default PlaneGeometry normal */
+    /* Xoay ảnh hướng ra ngoài theo mặt cầu */
+    const fwd = new THREE.Vector3(0, 0, 1);
     const q   = new THREE.Quaternion().setFromUnitVectors(fwd, pt.nrm);
     mesh.setRotationFromQuaternion(q);
 
