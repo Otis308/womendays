@@ -608,6 +608,7 @@ html, body {
 .plane-icon {
   font-size: 2.2rem; display: inline-block;
   filter: drop-shadow(0 0 14px rgba(255,180,220,0.95));
+  transform: rotate(45deg);
 }
 .plane-msg {
   font-family: 'Dancing Script', cursive; font-size: 1.22rem; font-weight: 700;
