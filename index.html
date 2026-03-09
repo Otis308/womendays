@@ -1,131 +1,162 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Happy Women's Day 💕</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400;1,700&family=Nunito:wght@300;400;600;700&family=Dancing+Script:wght@500;700&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="style.css" />
-</head>
-<body>
-
-  <!-- ── 0. PIN LOCK ── -->
-  <div id="pin-screen" class="screen active">
-    <div class="pin-sparkles" id="pin-sparkles"></div>
-    <div class="pin-card" id="pin-card">
-      <div class="pin-rose">🌹</div>
-      <h2 class="pin-title">Unlock Your Surprise</h2>
-      <p class="pin-sub">Enter the secret PIN ✨</p>
-      <div class="pin-dots" id="pin-dots">
-        <span class="pin-dot"></span>
-        <span class="pin-dot"></span>
-        <span class="pin-dot"></span>
-        <span class="pin-dot"></span>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Happy Women's Day 💕</title>
+    <link
+      rel="icon"
+      href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>💖</text></svg>"
+    />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400;1,700&family=Nunito:wght@300;400;600;700&family=Dancing+Script:wght@500;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="style.css" />
+    <link rel="stylesheet" href="sphere.css" />
+  </head>
+  <body>
+    <div id="pin-screen" class="screen active">
+      <div class="pin-sparkles" id="pin-sparkles"></div>
+      <div class="pin-card" id="pin-card">
+        <div class="pin-rose">🌹</div>
+        <h2 class="pin-title">Unlock Your Surprise</h2>
+        <p class="pin-sub">Enter the secret PIN ✨</p>
+        <div class="pin-dots" id="pin-dots">
+          <span class="pin-dot"></span>
+          <span class="pin-dot"></span>
+          <span class="pin-dot"></span>
+          <span class="pin-dot"></span>
+        </div>
+        <p class="pin-error" id="pin-error">&nbsp;</p>
+        <div class="pin-pad">
+          <button class="pkey" data-v="1">1</button>
+          <button class="pkey" data-v="2">2</button>
+          <button class="pkey" data-v="3">3</button>
+          <button class="pkey" data-v="4">4</button>
+          <button class="pkey" data-v="5">5</button>
+          <button class="pkey" data-v="6">6</button>
+          <button class="pkey" data-v="7">7</button>
+          <button class="pkey" data-v="8">8</button>
+          <button class="pkey" data-v="9">9</button>
+          <button class="pkey pkey-del" data-v="del">⌫</button>
+          <button class="pkey" data-v="0">0</button>
+          <button class="pkey pkey-ok" data-v="ok">✓</button>
+        </div>
       </div>
-      <p class="pin-error" id="pin-error">&nbsp;</p>
-      <div class="pin-pad">
-        <button class="pkey" data-v="1">1</button>
-        <button class="pkey" data-v="2">2</button>
-        <button class="pkey" data-v="3">3</button>
-        <button class="pkey" data-v="4">4</button>
-        <button class="pkey" data-v="5">5</button>
-        <button class="pkey" data-v="6">6</button>
-        <button class="pkey" data-v="7">7</button>
-        <button class="pkey" data-v="8">8</button>
-        <button class="pkey" data-v="9">9</button>
-        <button class="pkey pkey-del" data-v="del">⌫</button>
-        <button class="pkey" data-v="0">0</button>
-        <button class="pkey pkey-ok" data-v="ok">✓</button>
+    </div>
+
+    <div id="intro-screen" class="screen">
+      <div class="stars-bg" id="intro-stars"></div>
+      <div class="hearts-bg" id="hearts-bg"></div>
+      <div class="intro-content">
+        <div class="intro-badge">March 8<sup>th</sup></div>
+        <h1 class="intro-title">
+          Something Special<br /><em>Just For You</em>
+        </h1>
+        <p class="intro-hint">tap to begin</p>
+        <button id="start-btn" class="start-btn">
+          <span>Open ✨</span>
+          <div class="btn-shine"></div>
+        </button>
       </div>
     </div>
-  </div>
 
-  <!-- ── 1. INTRO ── -->
-  <div id="intro-screen" class="screen">
-    <div class="stars-bg" id="intro-stars"></div>
-    <div class="hearts-bg" id="hearts-bg"></div>
-    <div class="intro-content">
-      <div class="intro-badge">March 8<sup>th</sup></div>
-      <h1 class="intro-title">Something Special<br/><em>Just For You</em></h1>
-      <p class="intro-hint">tap to begin</p>
-      <button id="start-btn" class="start-btn">
-        <span>Open ✨</span>
-        <div class="btn-shine"></div>
-      </button>
+    <div id="scene-particles" class="screen">
+      <canvas id="particle-canvas"></canvas>
+      <div id="plane-wrap" class="plane-wrap">
+        <div class="plane-trail"><span></span><span></span><span></span></div>
+        <span class="plane-icon">✈️</span>
+        <span class="plane-msg">Chúc em ngày 8/3 tràn đầy yêu thương! 💕</span>
+      </div>
+      <button id="particle-skip" class="skip-btn">skip →</button>
     </div>
-  </div>
 
-  <!-- ── 2. PARTICLE TEXT ── -->
-  <div id="scene-particles" class="screen">
-    <canvas id="particle-canvas"></canvas>
-    <button id="particle-skip" class="skip-btn">skip →</button>
-  </div>
+    <div id="scene-sphere" class="screen">
+      <canvas id="sphere-canvas"></canvas>
 
-  <!-- ── 3. 3D PHOTO HEART ── -->
-  <div id="scene-sphere" class="screen">
-    <canvas id="sphere-canvas"></canvas>
-    <div class="heart-ui">
-      <p class="heart-hint">Drag to rotate • Tap a photo to zoom 💕</p>
+      <canvas id="sphere-overlay-canvas"></canvas>
+
+      <div class="side-effects">
+        <div class="aurora aurora-left"></div>
+        <div class="aurora aurora-right"></div>
+        <div id="sparkle-rain" class="sparkle-rain"></div>
+        <div id="shooting-stars" class="shooting-stars"></div>
+        <div id="side-floats-left" class="side-floats"></div>
+        <div id="side-floats-right" class="side-floats side-floats-right"></div>
+      </div>
+
+      <div class="heart-ui">
+        <p class="heart-hint">Drag to rotate • Tap a photo to zoom 💕</p>
+      </div>
+
+      <div id="sphere-loading" class="loading-overlay">
+        <div class="loading-heart">💗</div>
+        <p>Loading memories...</p>
+      </div>
     </div>
-    <div id="sphere-loading" class="loading-overlay">
-      <div class="loading-heart">💗</div>
-      <p>Loading memories...</p>
-    </div>
-  </div>
 
-  <!-- ── 4. LOVE LETTER ── -->
-  <div id="scene-letter" class="screen">
-    <div class="letter-bg"></div>
-    <div id="petals-container" class="petals-wrap"></div>
+    <div id="scene-letter" class="screen">
+      <div class="letter-bg"></div>
+      <div id="petals-container" class="petals-wrap"></div>
 
-    <div class="env-stage">
-      <p id="env-prompt" class="env-prompt">Click to open 💌</p>
-      <div id="envelope" class="envelope">
-        <div class="env-back"></div>
-        <div class="env-side env-left"></div>
-        <div class="env-side env-right"></div>
-        <div class="env-bottom"></div>
-        <div class="env-flap"><div class="env-flap-face"></div></div>
-        <div class="env-seal">❤</div>
-        <div class="letter-clip">
-          <div class="letter-paper" id="letter-paper">
-            <div class="letter-inner" id="letter-content"></div>
+      <div class="env-stage">
+        <p id="env-prompt" class="env-prompt">Click to open 💌</p>
+        <div id="envelope" class="envelope">
+          <div class="env-back"></div>
+          <div class="env-side env-left"></div>
+          <div class="env-side env-right"></div>
+          <div class="env-bottom"></div>
+          <div class="env-flap"><div class="env-flap-face"></div></div>
+          <div class="env-seal">❤</div>
+          <div class="letter-clip">
+            <div class="letter-paper" id="letter-paper">
+              <div class="letter-inner" id="letter-content"></div>
+            </div>
           </div>
         </div>
       </div>
-    </div>
 
-    <!-- Full scrollable letter overlay -->
-    <div id="full-letter-overlay" class="full-letter-overlay">
-      <div class="full-letter-scroll">
-        <div class="full-letter-paper">
-          <div class="letter-inner" id="full-letter-content"></div>
+      <div id="full-letter-overlay" class="full-letter-overlay">
+        <div class="full-letter-scroll">
+          <div class="full-letter-paper">
+            <div class="letter-inner" id="full-letter-content"></div>
+          </div>
+          <button id="close-letter-btn" class="outline-btn">✕ Close</button>
         </div>
-        <button id="close-letter-btn" class="outline-btn">✕ Close</button>
       </div>
+
+      <button id="replay-btn" class="replay-btn" style="display: none">
+        ↺ back
+      </button>
     </div>
 
-    <button id="replay-btn" class="replay-btn" style="display:none">↺ Replay</button>
-  </div>
+    <div id="lightbox" class="lightbox">
+      <div class="lb-inner">
+        <img id="lb-img" class="lb-img" src="" alt="memory" />
 
-  <!-- Photo lightbox -->
-  <div id="lightbox" class="lightbox">
-    <div class="lb-inner">
-      <img id="lb-img" class="lb-img" src="" alt="memory" />
+        <button class="lb-nav lb-prev" id="lb-prev" aria-label="Previous">
+          &#8249;
+        </button>
+        <button class="lb-nav lb-next" id="lb-next" aria-label="Next">
+          &#8250;
+        </button>
+
+        <p class="lb-caption" id="lb-caption"></p>
+      </div>
+      <button id="lb-close" class="lb-close">✕</button>
     </div>
-    <button id="lb-close" class="lb-close">✕</button>
-  </div>
 
-  <!-- Floating shaking letter FAB -->
-  <button id="letter-fab" class="letter-fab" title="Open letter">
-    <span class="fab-emoji">💌</span>
-    <span class="fab-lbl">Letter</span>
-    <div class="fab-ring"></div>
-  </button>
+    <button id="letter-fab" class="letter-fab" title="Open letter">
+      <span class="fab-emoji">💌</span>
+      <span class="fab-lbl">Letter</span>
+      <div class="fab-ring"></div>
+    </button>
 
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-  <script src="script.js"></script>
-</body>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="sphere.js"></script>
+    <script src="script.js"></script>
+  </body>
 </html>

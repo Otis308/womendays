@@ -485,7 +485,7 @@ html, body {
   transition: opacity .35s ease;
 }
 .lightbox.active { opacity: 1; pointer-events: all; }
-.lb-inner { max-width: min(88vw,640px); max-height: 82vh; }
+.lb-inner { max-width: min(88vw,640px); max-height: 82vh; position: relative; overflow: visible }
 .lb-img {
   max-width: 100%; max-height: 82vh;
   border-radius: 14px;
@@ -569,4 +569,65 @@ html, body {
 }
 @media (max-height: 640px) {
   .full-letter-overlay { padding-top: 1rem; }
+}
+/* ═══════════ AIRPLANE FLYBY ═══════════ */
+.plane-wrap {
+  position: absolute;
+  top: 13%;
+  /* Bắt đầu ngoài màn hình bên trái */
+  left: -380px;
+  display: flex; align-items: center; gap: 12px;
+  pointer-events: none; z-index: 8;
+  opacity: 0; white-space: nowrap;
+  /* Reset transform về 0 mỗi khi không có class */
+  transform: translateX(0);
+}
+
+/* ── Lần 1: Bay từ trái → giữa màn hình rồi dừng ── */
+.plane-wrap.fly-half {
+  animation: plane-fly-half 3.2s cubic-bezier(.25,.46,.45,.94) forwards;
+}
+@keyframes plane-fly-half {
+  0%   { opacity: 0; transform: translateX(0px)       translateY(0px); }
+  8%   { opacity: 1; }
+  /* Dừng lại ở giữa màn hình: left=-380px, cần translateX ≈ 50vw+380px */
+  100% { opacity: 1; transform: translateX(calc(50vw + 380px)) translateY(-18px); }
+}
+
+/* ── Lần 2: Tiếp tục từ giữa → ra khỏi màn hình bên phải ── */
+.plane-wrap.fly-full {
+  animation: plane-fly-full 3.0s cubic-bezier(.55,.0,.9,.5) forwards;
+}
+@keyframes plane-fly-full {
+  /* Bắt đầu đúng chỗ dừng của lần 1 */
+  0%   { opacity: 1; transform: translateX(calc(50vw + 380px)) translateY(-18px); }
+  92%  { opacity: 1; }
+  100% { opacity: 0; transform: translateX(calc(100vw + 760px)) translateY(-40px); }
+}
+
+.plane-icon {
+  font-size: 2.2rem; display: inline-block;
+  filter: drop-shadow(0 0 14px rgba(255,180,220,0.95));
+}
+.plane-msg {
+  font-family: 'Dancing Script', cursive; font-size: 1.22rem; font-weight: 700;
+  letter-spacing: .04em;
+  background: linear-gradient(90deg, #ffaadd, #ff66bb, #ffaaee);
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+  filter: drop-shadow(0 0 10px rgba(255,100,180,0.8));
+}
+.plane-trail {
+  position: absolute; right: 100%; top: 50%; transform: translateY(-50%);
+  display: flex; gap: 6px; margin-right: 4px;
+}
+.plane-trail span {
+  border-radius: 50%; background: rgba(255,180,220,0.65); display: inline-block;
+  animation: trail-fade .9s ease-out infinite;
+}
+.plane-trail span:nth-child(1){ width:6px; height:6px; }
+.plane-trail span:nth-child(2){ width:4px; height:4px; animation-delay:.12s; }
+.plane-trail span:nth-child(3){ width:3px; height:3px; animation-delay:.24s; }
+@keyframes trail-fade {
+  0%  { opacity:.8; transform:scale(1); }
+  100%{ opacity:0;  transform:scale(2.5) translateX(-10px); }
 }
